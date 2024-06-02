@@ -1,0 +1,134 @@
+package oop;
+
+import java.util.Scanner;
+
+class Product {
+    private String name;
+    private int price;
+    private String category;
+
+    public Product(String name, int price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    @Override
+    public String toString() {
+        return "Product: " + name + ", Price: " + price + " PKR, Category: " + category;
+    }
+}
+
+
+class Electronics extends Product {
+    public Electronics(String name, int price) {
+        super(name, price, "Electronics");
+    }
+}
+
+
+class Clothes extends Product {
+    public Clothes(String name, int price) {
+        super(name, price, "Clothes");
+    }
+}
+
+
+class ECommerceStore {
+    private Product[] products;
+    private int[] cart;
+    private int cartSize;
+
+    public ECommerceStore() {
+        products = new Product[10];
+        cart = new int[10];
+        cartSize = 0;
+        initializeStore();
+    }
+
+
+    private void initializeStore() {
+        products[0] = new Electronics("Laptop", 99999);
+        products[1] = new Electronics("Smartphone", 49999);
+        products[2] = new Electronics("Headphones", 14999);
+        products[3] = new Clothes("Shirt", 599);
+        products[4] = new Clothes("Jeans", 1499);
+        products[5] = new Clothes("Shoes", 2999);
+        products[6] = new Clothes("Cape", 250);
+    }
+
+
+    public void displayAvailableItems() {
+        System.out.println("Available Products:");
+        for (int i = 0; i < products.length; i++) {
+            if (products[i] != null) {
+                System.out.println((i + 1) + ". " + products[i]);
+            }
+        }
+    }
+
+    public void addToCart(int productIndex) {
+        if (cartSize < cart.length) {
+           cart[cartSize++] = productIndex;
+            System.out.println(products[productIndex].getName() + " added to the cart.");
+        } else {
+            System.out.println("Cart is full. Cannot add more products.");
+        }
+    }
+
+
+    public void checkout() {
+        int total = 0;
+        System.out.println("Items in the cart:");
+        for (int i = 0; i < cartSize; i++) {
+            int productIndex = cart[i];
+            System.out.println(products[productIndex]);
+            total += products[productIndex].getPrice();
+        }
+
+        System.out.println("The total amount for checkout is: " + total + " PKR");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your amount");
+        int amount = scanner.nextInt();
+        if (amount == total) {
+            System.out.println("order Sucessfull!!");
+        } else {
+            System.out.println("Entered amount should be equal to your bill");
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ECommerceStore store = new ECommerceStore();
+
+        System.out.println("=====welcome to Kart=====\n");
+
+        store.displayAvailableItems();
+
+        while (true) {
+            System.out.println("\nEnter the number of the product to add to the cart (0 to checkout):");
+            int input = scanner.nextInt();
+            if (input == 0) {
+                store.checkout();
+                break;
+            } else if (input > 0 && input <= store.products.length) {
+                store.addToCart(input - 1);
+            } else {
+                System.out.println("Invalid input. Please try again.");
+            }
+        }
+        scanner.close();
+    }
+}
